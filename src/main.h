@@ -27,8 +27,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define HW_VERSION 1.1	// 1.2 = interrupt based blank, 1.1 = non-interrupt based blank
-
 /*******************
  * Pin definitions *
  *******************/
@@ -45,10 +43,11 @@
 #define LED_ROW_3 PORTC |= (0x02)
 #define LED_ROW_4 PORTD |= (0x08)
 #define LED_ROW_5 PORTC |= (0x04)
-
+#define LED_ROW_6 PORTD |= (0x04)
 #define LED_ROW_7 PORTC |= (0x08)
 
 // External Control Pins
+#define EX_PIN_BLNK PINB & (0x20)
 #define EX_PIN_HLD PIND & (0x20)
 //#define EX_PIN_LEDSOURCE
 
@@ -67,16 +66,5 @@
 #define EX_PAD_MISO
 #define EX_PAD_SCK
 #define EX_PAD_RST
-
-// For Different Hardware Versions
-#if HW_VERSION == 1.1			// Prototype Model (non-interrupt based blank)
-	#define EX_PIN_BLNK PINB & (0x20)
-	#define LED_ROW_6 PORTD |= (0x04)
-#elif HW_VERSION == 1.2			// Production Model (interrupt based blank)
-	#define EX_PIN_BLNK PIND & (0x04)
-	#define LED_ROW_6 PORTB |= (0x20)
-#endif
-
-
 
 #endif
