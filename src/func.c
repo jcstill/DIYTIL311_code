@@ -217,7 +217,8 @@ void led20(void){
 	PORTC |= 0x01;						// LED_ROW_1 on
 	PORTC |= 0x08;						// LED_ROW_7 on
 }
-void writeDisplay(uint8_t x &= 0x0F){
+void writeDisplay(uint8_t x){
+	x &= 0x0F;
 	uint8_t i = 0;						// For loop variable
 	uint8_t ledFac = 1;					// Factor of how many times the loop runs
 	

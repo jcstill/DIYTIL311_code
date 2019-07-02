@@ -69,7 +69,7 @@ int main(void){
 			piD = readPortIn(2);
 			
 			// Check to see if BLNK has gone low
-			if(piB & 0x20 == 0){
+			if((piB & 0x20) == 0){
 				LED_state = 1;			// LEDs on
 			}else{
 				LED_state = 0;			// LEDs off
@@ -83,10 +83,10 @@ int main(void){
 		}while(LED_state == 0);
 		
 		// Process HLD
-		if(piD & 0x20 == 0){
+		if((piD & 0x20) == 0){
 			// Update DIYTIL311 external control word to register values
 			chpCtrl = 0x00;
-			chpCtrl |= (piD & 0x80 >> 4) | (piD & 0x40 >> 4) | (piB & 0x02) | (piB & 0x01);
+			chpCtrl |= ((piD & 0x80) >> 4) | ((piD & 0x40) >> 4) | (piB & 0x02) | (piB & 0x01);
 		}
 		
 		// Call multiplexing function
