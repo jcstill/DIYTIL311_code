@@ -22,8 +22,6 @@
 *	
 */
 
-// Version 1.1 and 1.2 are different in hardware connections to allow for more control over blanking interrupts
-
 Pin						Connection				Code
 ----------------------- -----------------------	--------------------------------------------------
 // PortD
@@ -41,7 +39,7 @@ PB1						EX_PIN_DI-C				PINB	=	(0x02)	|	(0b00000010)	|	(1<<1)
 PB2						EX_PAD_MOSI				PINB	=	(0x04)	|	(0b00000100)	|	(1<<2)
 PB3						EX_PAD_MISO				PINB	=	(0x08)	|	(0b00001000)	|	(1<<3)
 PB4						EX_PAD_SCK				PINB	=	(0x10)	|	(0b00010000)	|	(1<<4)
-PB5 (PCINT5)			EX_PIN_BLNK				PINB	=	(0x20)	|	(0b00100000)	|	(1<<5)
+PB5 					EX_PIN_BLNK				PINB	=	(0x20)	|	(0b00100000)	|	(1<<5)
 PB6						RES2					??PINB	=	(0x40)	|	(0b01000000)	|	(1<<6)
 PB7						RES1					??PINB	=	(0x80)	|	(0b10000000)	|	(1<<7)
 // PortC
@@ -52,6 +50,3 @@ PC3						LED_ROW_7				PORTC	=	(0x08)	|	(0b00001000)	|	(1<<3)
 PC4						LED_COL_4				PORTC	=	(0x10)	|	(0b00010000)	|	(1<<4)
 PC5						LED_COL_3				PORTC	=	(0x20)	|	(0b00100000)	|	(1<<5)
 PC6						EX_PAD_RST				PINC	=	(0x40)	|	(0b01000000)	|	(1<<6)
-// ADC
-ADC6					EX_PIN_LEDSOURCE		??
------------------------ -----------------------	--------------------------------------------------

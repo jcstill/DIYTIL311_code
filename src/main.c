@@ -24,23 +24,6 @@
 
 #include "main.h"
 
-uint8_t LED_state = 1;					// 0 = off, 1 = on
-
-uint8_t readPortIn(uint8_t x){
-	if(x == 0){
-		return PINB;					// Read B register inputs
-	}else if(x == 1){
-		return PINC;					// Read C register inputs
-	}else if(x == 2){
-		return PIND;					// Read D register inputs
-	}else{
-		return 0;						// Fallback to 0
-	}
-}
-void writeDisplay(uint8_t x){
-	// THIS IS THE MULTIPLEXING FUNCTION
-}
-
 int main(void){
 /*******************
  *   Set up I/O    *
@@ -51,14 +34,14 @@ int main(void){
 	DDRB = 0x00;
 	
 	// Set pin directions (1 is output, 0 is input)
-	DDRD = 0x1F;					// D Reg:	0001 1111
-	DDRC = 0x3F;					// C Reg:	0011 1111			
-	DDRB = 0x00;					// B Reg:	XX0X XX00
+	DDRD = 0x1F;						// D Reg:	0001 1111
+	DDRC = 0x3F;						// C Reg:	0011 1111
+	DDRB = 0x00;						// B Reg:	XX0X XX00
 	
 	// Set pull-up resistors
-	PORTD = 0x00;					// D Reg:	0000 0000
-	PORTC = 0x00;					// D Reg:	0000 0000
-	PORTB = 0x00;					// D Reg:	0000 0000
+	PORTD = 0xE0;						// D Reg:	1110 0000
+	PORTC = 0x00;						// D Reg:	0000 0000
+	PORTB = 0x23;						// D Reg:	0010 0011
 
 /*******************
  *    Variables    *
@@ -67,6 +50,12 @@ int main(void){
 	uint8_t piC = 0x00;					// C register on a328p
 	uint8_t piD = 0x00;					// D register on a328p
 	uint8_t chpCtrl = 0x00;				// DIYTIL311 external control word: X, X, X, X, D(8), C(4), B(2), A(1)
+	uint8_t LED_state = 1;				// 0 = off, 1 = on
+	
+/*******************
+ * Boot Animation  *
+ *******************/
+	//aminate();
 	
 /*******************
  *    Main Loop    *
@@ -79,12 +68,19 @@ int main(void){
 			piC = readPortIn(1);
 			piD = readPortIn(2);
 			
-			if(piB & 0x20 == 0){	// Check to see if BLNK has gone low
-				LED_state = 1;		// LEDs on
+			// Check to see if BLNK has gone low
+			if(piB & 0x20 == 0){
+				LED_state = 1;			// LEDs on
 			}else{
-				LED_state = 0;		// LEDs off
+				LED_state = 0;			// LEDs off
+				// Immediately force all output pins low
+				PORTD &= 0xE0;			// D Reg:	1110 0000
+				PORTC &= 0x00;			// C Reg:	0000 0000
+				PORTB &= 0x23;			// B Reg:	0010 0011
+				// Wait here some time
+				for(uint8_t i=0;i<100; i++){}
 			}
-		}while(LED_state != 0);
+		}while(LED_state == 0);
 		
 		// Process HLD
 		if(piD & 0x20 == 0){
@@ -100,52 +96,6 @@ int main(void){
 
 
 
-/*
-#if HW_VERSION == 1.2
-ISR(INT0_vect){
-	uint8_t piD = 0;
-	piD = readPortIn(2);				// Read the INT0 state
-	if(piD & 0x04 != 0){				// Rising edge of INT0
-		// Immediately force all output pins low
-		// PORTD &= 0xE4;
-		// PORTC &= 0xC0;
-		// PORTB &= 0x03;
-		// Turn off LEDs (Logically)
-		LED_state = 0;
-	}else{								// Falling edge of INT0
-		// Turn on LEDs
-		LED_state = 1;
-	}
-}
-#endif
-
-
-	#if HW_VERSION == 1.1
-		DDRD = 0x1F;					// D Reg:	0001 1111
-		DDRC = 0x3F;					// C Reg:	0011 1111			
-		DDRB = 0x00;					// B Reg:	XX0X XX00
-	#elif HW_VERSION == 1.2
-		DDRD = 0x1B;					// D Reg:	0001 1011
-		DDRC = 0x3F;					// C Reg:	0011 1111			
-		DDRB = 0x20;					// B Reg:	XX1X XX00
-	#endif
-
-	#if HW_VERSION == 1.2
-		DDRD &= 0xFB;					// Set INT0 as an input (also set in I/O)
-		PORTD |= 0x04;					// Enable pull-up resistor
-		EICRA = 0x01;					// Trigger INT0 on any change
-		EIMSK = 0x01;					// Enable INT0
-		// EICRA = 1<<ISC00;    			// Trigger INT0 on rising edge
-		// EIMSK = 1<<INT0;     			// Enable INT0
-		sei();							// Enable Global Interrupt
-	#endif
-	
-		// Set high bit of control word
-	#if HW_VERSION == 1.1
-		chpCtrl = (piB & 0x20);
-	#elif HW_VERSION == 1.2
-		chpCtrl = (piD & 0x04 << 3);
-	#endif
 
 
 
@@ -192,7 +142,10 @@ ISR(INT0_vect){
 
 
 
-*/
+
+
+
+
 
 
 // Nuclear (Album Version) - Zomboy 
