@@ -32,31 +32,34 @@ int main(void){
 	DDRD = 0x00;
 	DDRC = 0x00;
 	DDRB = 0x00;
-	
 	// Set pin directions (1 is output, 0 is input)
 	DDRD = 0x1F;						// D Reg:	0001 1111
 	DDRC = 0x3F;						// C Reg:	0011 1111
 	DDRB = 0x00;						// B Reg:	XX0X XX00
-	
 	// Set pull-up resistors
 	PORTD = 0xE0;						// D Reg:	1110 0000
 	PORTC = 0x00;						// D Reg:	0000 0000
-	PORTB = 0x23;						// D Reg:	0010 0011
+	PORTB = 0x07;						// D Reg:	0000 0111
+
+
+	while(1){
+		writeDisplay(0x02);
+	}
 
 /*******************
  *    Variables    *
  *******************/
-	uint8_t piB = 0x00;					// B register on a328p
-	uint8_t piC = 0x00;					// C register on a328p
-	uint8_t piD = 0x00;					// D register on a328p
-	uint8_t chpCtrl = 0x00;				// DIYTIL311 external control word: X, X, X, X, D(8), C(4), B(2), A(1)
-	uint8_t LED_state = 1;				// 0 = off, 1 = on
-	
+	unsigned char piB = 0x00;					// B register on a328p
+	unsigned char piC = 0x00;					// C register on a328p
+	unsigned char piD = 0x00;					// D register on a328p
+	unsigned char chpCtrl = 0x00;				// DIYTIL311 external control word: X, X, X, X, D(8), C(4), B(2), A(1)
+	unsigned char LED_state = 1;				// 0 = off, 1 = on
+
 /*******************
  * Boot Animation  *
  *******************/
 	//aminate();
-	
+
 /*******************
  *    Main Loop    *
  *******************/
@@ -69,14 +72,13 @@ int main(void){
 			piD = readPortIn(2);
 			
 			// Check to see if BLNK has gone low
-			if((piB & 0x20) == 0){
+			if((piB & 0x04) == 0){
 				LED_state = 1;			// LEDs on
 			}else{
 				LED_state = 0;			// LEDs off
 				// Immediately force all output pins low
 				PORTD &= 0xE0;			// D Reg:	1110 0000
 				PORTC &= 0x00;			// C Reg:	0000 0000
-				PORTB &= 0x23;			// B Reg:	0010 0011
 				// Wait here some time
 				for(uint8_t i=0;i<100; i++){}
 			}
